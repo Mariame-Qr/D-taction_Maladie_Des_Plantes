@@ -1,0 +1,230 @@
+```
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    🌿 PLANT DISEASE DETECTOR 🌿                           ║
+║                                                                            ║
+║               Application Flutter + FastAPI + Google Gemini               ║
+║                     Détection intelligente de maladies                    ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌─ ARCHITECTURE ───────────────────────────────────────────────────────────┐
+│                                                                          │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │ UTILISATEUR (Android/iOS)                                        │  │
+│  │  ├─ 📷 Caméra / 🖼️ Galerie                                     │  │
+│  │  ├─ 🎯 Prédiction en temps réel                                │  │
+│  │  ├─ 📊 Historique des analyses                                 │  │
+│  │  └─ ⚙️  Paramètres configurables                               │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                             ↓ HTTP                                      │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │ FLUTTER FRONTEND (lib/)                                          │  │
+│  │  ├─ 📱 Main App                                                  │  │
+│  │  ├─ 🎨 DetectionScreen (Caméra)                                 │  │
+│  │  ├─ 📜 HistoryScreen                                            │  │
+│  │  ├─ ⚙️  SettingsScreen                                          │  │
+│  │  ├─ 🔗 Services (API, Storage, Permissions)                    │  │
+│  │  └─ 🎁 Widgets réutilisables                                    │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                             ↓ REST API                                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │ FASTAPI BACKEND (backend/main.py)                               │  │
+│  │  ├─ GET /                 → État du serveur                      │  │
+│  │  ├─ GET /classes          → Maladies disponibles                │  │
+│  │  ├─ POST /predict         → Prédiction (1 image)                │  │
+│  │  ├─ POST /predict-batch   → Prédictions (N images)              │  │
+│  │  └─ GET /health           → Santé du serveur                    │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                             ↓ TensorFlow                                │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │ MODÈLE IA (assets/model.tflite)                                 │  │
+│  │  └─ Détection de maladies de plantes                            │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                                          │
+│  Optionnel:                                                            │
+│  ┌─ Google Gemini API ─────────────────────────────────────────────┐  │
+│  │ Génération des solutions recommandées en IA                     │  │
+│  └─────────────────────────────────────────────────────────────────┘  │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ STRUCTURE DES FICHIERS ─────────────────────────────────────────────────┐
+│                                                                          │
+│  lib/                          Frontend Flutter                         │
+│  ├─ main.dart                  Point d'entrée (Navigation 4 onglets)   │
+│  ├─ cnn_page.dart              Page TFLite original                     │
+│  ├─ config/                    Configuration                           │
+│  │  └─ api_constants.dart      URLs, clés API                         │
+│  ├─ models/                    Modèles de données                      │
+│  │  └─ prediction_result.dart  Résultat de prédiction                 │
+│  ├─ screens/                   4 écrans principaux                     │
+│  │  ├─ detection_screen.dart   Caméra + Galerie                       │
+│  │  ├─ history_screen.dart     Historique                             │
+│  │  ├─ settings_screen.dart    Paramètres                             │
+│  │  └─ (cnn_page.dart)         Analyse CNN TFLite                     │
+│  ├─ services/                  Services métier                         │
+│  │  ├─ api_service.dart        Requêtes HTTP                          │
+│  │  ├─ gemini_service.dart     Google Gemini                          │
+│  │  ├─ storage_service.dart    Sauvegarde locale JSON                 │
+│  │  └─ permission_service.dart Permissions système                    │
+│  ├─ utils/                     Utilitaires                             │
+│  │  ├─ error_handler.dart      Gestion erreurs                        │
+│  │  └─ image_utils.dart        Compression/Redimensionnement          │
+│  └─ widgets/                   Composants réutilisables                │
+│     └─ prediction_result_widget.dart   Widget résultat               │
+│                                                                          │
+│  backend/                      Serveur FastAPI                         │
+│  ├─ main.py                    Application + endpoints                 │
+│  ├─ requirements.txt           Dépendances Python                      │
+│  ├─ setup.py                   Script configuration                    │
+│  ├─ start.bat                  Lancement Windows                       │
+│  └─ README.md                  Documentation                           │
+│                                                                          │
+│  assets/                       Ressources                               │
+│  ├─ model.tflite              Modèle TensorFlow Lite                   │
+│  └─ labels.txt                Classes (une par ligne)                  │
+│                                                                          │
+│  [Fichiers de config]                                                   │
+│  ├─ pubspec.yaml              Dépendances Flutter                      │
+│  ├─ android/...               Configuration Android                    │
+│  ├─ ios/...                   Configuration iOS                        │
+│  └─ analysis_options.yaml     Règles Dart                             │
+│                                                                          │
+│  [Documentation]                                                        │
+│  ├─ README_COMPLET.md         Vue d'ensemble complète                  │
+│  ├─ STARTUP.md                Guide détaillé démarrage                 │
+│  ├─ SETUP.md                  Instructions installation               │
+│  └─ .env                       Variables d'environnement               │
+│                                                                          │
+│  [Scripts]                                                              │
+│  ├─ start_app.bat             Démarrage simple                         │
+│  ├─ verify_setup.py           Vérification config                      │
+│  └─ backend/setup.py          Setup Python backend                     │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ FONCTIONNALITÉS ────────────────────────────────────────────────────────┐
+│                                                                          │
+│  ✅ Détection d'image (Caméra & Galerie)                               │
+│  ✅ Prédictions précises (TensorFlow Lite)                             │
+│  ✅ Solutions recommandées (Google Gemini)                             │
+│  ✅ Historique persistant (JSON local)                                 │
+│  ✅ Mode API & Mode Local (configurable)                              │
+│  ✅ Barre de confiance (%)                                            │
+│  ✅ Interface Material Design 3                                        │
+│  ✅ Gestion des permissions                                           │
+│  ✅ Gestion complète des erreurs                                       │
+│  ✅ Vérification connectivité                                          │
+│  ✅ Métadonnées de chaque prédiction                                  │
+│  ✅ API REST documentée                                                │
+│  ✅ Support multi-plateforme                                           │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ DÉMARRAGE RAPIDE ──────────────────────────────────────────────────────┐
+│                                                                          │
+│  Option 1: Script automatique (⭐ Recommandé)                          │
+│  ────────────────────────────────────────────────────────              │
+│  $ start_app.bat                                                        │
+│  [Sélectionner option 1, 2, ou 3]                                       │
+│                                                                          │
+│  Option 2: Manuel en 2 terminaux                                        │
+│  ──────────────────────────────────                                     │
+│  Terminal 1 (Backend):                                                  │
+│  $ cd backend                                                           │
+│  $ python -m uvicorn main:app --reload                                 │
+│                                                                          │
+│  Terminal 2 (App):                                                      │
+│  $ flutter run                                                          │
+│                                                                          │
+│  Puis ouvrir dans le navigateur:                                        │
+│  → http://localhost:8000          (API)                                 │
+│  → http://localhost:8000/docs     (Documentation)                      │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ PRÉREQUIS ──────────────────────────────────────────────────────────────┐
+│                                                                          │
+│  ✓ Flutter 3.9.2+               https://flutter.dev                    │
+│  ✓ Python 3.10+                 https://python.org                     │
+│  ✓ Android SDK / Émulateur      (ou appareil physique)                │
+│  ✓ Internet (pour Gemini API)   (optionnel)                           │
+│                                                                          │
+│  Installation dépendances:                                              │
+│  $ flutter pub get                                                      │
+│  $ cd backend && pip install -r requirements.txt                       │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ ENDPOINTS API ──────────────────────────────────────────────────────────┐
+│                                                                          │
+│  GET /                                                                   │
+│  └─ Vérification serveur actif                                         │
+│                                                                          │
+│  GET /classes                                                            │
+│  └─ Liste des maladies détectables                                     │
+│                                                                          │
+│  POST /predict                                                           │
+│  ├─ Paramètres: file (image)                                            │
+│  └─ Réponse: {class, confidence, solution, timestamp}                  │
+│                                                                          │
+│  POST /predict-batch                                                     │
+│  ├─ Paramètres: files (images multiples)                                │
+│  └─ Réponse: [{class, confidence, solution}, ...]                      │
+│                                                                          │
+│  GET /health                                                             │
+│  └─ Vérification santé serveur                                          │
+│                                                                          │
+│  Docs interactives: http://localhost:8000/docs                         │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ CONFIGURATION ──────────────────────────────────────────────────────────┐
+│                                                                          │
+│  lib/config/api_constants.dart:                                         │
+│  ┌───────────────────────────────────────────────────────────────────┐ │
+│  │ // Émulateur Android (par défaut)                                 │ │
+│  │ static const String baseUrl = 'http://10.0.2.2:8000';             │ │
+│  │                                                                   │ │
+│  │ // Appareil physique (remplacez l'IP)                            │ │
+│  │ static const String baseUrl = 'http://192.168.1.100:8000';       │ │
+│  │                                                                   │ │
+│  │ // Gemini API (optionnel)                                        │ │
+│  │ static const String geminiApiKey = 'YOUR_KEY_HERE';              │ │
+│  └───────────────────────────────────────────────────────────────────┘ │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ TECHNOLOGIES ───────────────────────────────────────────────────────────┐
+│                                                                          │
+│  Frontend:        Flutter 3.9.2+, Dart 3.9+, Material Design 3         │
+│  Backend:         FastAPI 0.109+, Python 3.10+, Uvicorn                │
+│  IA/ML:           TensorFlow Lite 2.14+, Google Gemini                 │
+│  Gestion État:    StatefulWidget                                       │
+│  Stockage Local:  JSON Files                                           │
+│  Requêtes HTTP:   http package                                         │
+│  Caméra/Galerie:  image_picker, camera packages                        │
+│  Base de donnees: Fichiers JSON locaux                                 │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌─ PROCHAINES ÉTAPES ──────────────────────────────────────────────────────┐
+│                                                                          │
+│  □ Placer le modèle TensorFlow Lite dans assets/model.tflite           │
+│  □ Créer labels.txt avec une classe par ligne                          │
+│  □ Configurer votre clé Google Gemini API (si désiré)                 │
+│  □ Tester sur un émulateur ou appareil réel                            │
+│  □ Optimiser les performances si nécessaire                            │
+│  □ Ajouter votre branding/logo                                         │
+│  □ Déployer sur Google Play Store                                      │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║  📚 Documentation: STARTUP.md, SETUP.md, README_COMPLET.md                 ║
+║  🐛 Problèmes?   Consulter STARTUP.md → Section Dépannage                  ║
+║  💬 Questions?   Voir les commentaires dans le code                        ║
+║                                                                             ║
+║  Dernière mise à jour: Décembre 2025                                       ║
+║  Version: 1.0.0                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+```
